@@ -1,0 +1,39 @@
+#################################################################################################
+#	vim:set ft=dockerfile:									#
+#	VERSION:	1.0									#
+#	AUTHOR:		Sinatra									#
+#	DESCRIPTION:	Dockerfile to create a default image for Sinatra's tools .		#
+#	TO_BUILD:	$ docker build -f Dockerfile.<tool> --rm -t idwall/docker-<tool> .	#
+#	TO_RUN:		$ docker run --rm -it idwall/docker-<tool> <param1> <param...> .	#
+#################################################################################################
+
+#################################################
+#	Pull base image.			#
+#	https://hub.docker.com/_/alpine		#
+#################################################
+FROM alpine:latest
+MAINTAINER Sinatra
+
+#################################
+#	Install OS utils	#
+#################################
+RUN apk update && apk upgrade && apk add --no-cache curl bash wget busybox-extras ca-certificates \
+	libpcap libgcc libstdc++ libretls && update-ca-certificates && rm -rf /var/cache/apk/*
+
+####################################################
+#       Compile and install <tool> from sources    #
+####################################################
+
+
+#########################################################################
+#	Create user and set ownership and permissions as required	#
+#########################################################################
+RUN addgroup -g 1000 idwaller && adduser -u 1000 -G idwaller -h /home/idwall -D idwall
+USER idwall
+WORKDIR /home/idwall
+
+#################################################
+#	Uncomment your binary entrypoint .	#
+#################################################
+# ENTRYPOINT ["/usr/bin/<tool>"]
+
